@@ -1,0 +1,10 @@
+kind: pipeline
+type: kubernetes
+name: blog-ci
+
+steps:
+- name: greeting
+  image: alpine
+  commands:
+  - echo hello
+  - echo world
