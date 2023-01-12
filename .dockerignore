@@ -2,6 +2,8 @@
 .circleci
 .dockerignore
 .env
-drkiq/node_modules/
-drkiq/vendor/bundle/
-drkiq/tmp/
+
+charts/
+node_modules/
+vendor/bundle/
+tmp/
