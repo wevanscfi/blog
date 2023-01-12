@@ -12,12 +12,18 @@ RUN mkdir -p $INSTALL_PATH
 
 # Install gems
 WORKDIR $INSTALL_PATH
-COPY . .
+COPY Gemfile Gemfile.lock ./
 RUN rm -rf node_modules vendor
 RUN gem install rails bundler
-RUN bundle install
+RUN bundle config build.nokogiri --use-system-libraries
+RUN bundle check || bundle install 
+
+# Install npm packages
 RUN yarn install
 
+# Copy the remaining files
+COPY . .
+
 # Start server
-CMD bundle exec rails server
+CMD bundle exec rails server -b 0.0.0.0
 
