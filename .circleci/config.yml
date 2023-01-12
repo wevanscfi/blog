@@ -62,13 +62,12 @@ jobs:
           #name: Run tests
           #command: |
             #docker-compose -f ./docker-compose.test.yml up
-      #- deploy:
-          #name: Push application Docker image
-          #command: |
-            #if [ "${CIRCLE_BRANCH}" == "main" ]; then
-              #login="$(aws ecr get-login)"
-              #${login}
-              #docker tag app "${ECR_ENDPOINT}/app:${CIRCLE_SHA1}"
-              #docker push "${ECR_ENDPOINT}/app:${CIRCLE_SHA1}"
-            #fi
+      - deploy:
+          name: Push application Docker image
+          command: |
+            if [ "${CIRCLE_BRANCH}" == "main" ]; then
+              echo "$DOCKER_HUB_ACCESS_TOKEN" | docker login --username $DOCKER_HUB_USER --password-stdin
+              docker tag app "pevanscfi/blog:${CIRCLE_SHA1}"
+              docker push "pevanscfi/blog:${CIRCLE_SHA1}"
+            fi
 
