@@ -1,4 +1,5 @@
 .git
+.circleci
 .dockerignore
 .env
 drkiq/node_modules/

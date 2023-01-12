@@ -67,7 +67,7 @@ jobs:
           command: |
             if [ "${CIRCLE_BRANCH}" == "main" ]; then
               docker login --username $DOCKER_HUB_USER --password $DOCKER_HUB_ACCESS_TOKEN
-              docker tag app "pevanscfi/blog:${CIRCLE_SHA1}"
+              docker tag blog "pevanscfi/blog:${CIRCLE_SHA1}"
               docker push "pevanscfi/blog:${CIRCLE_SHA1}"
             fi
 
