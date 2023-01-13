@@ -51,13 +51,8 @@ jobs:
   deploy:
     working_directory: /
     docker:
-      - image: docker:17.05.0-ce-git
+      - image: pevanscfi/ops-toolbox:latest
     steps:
-      - run:
-          name: Install yq
-          command: |
-            wget https://github.com/mikefarah/yq/releases/latest/download/yq_linux_amd64 -O /usr/local/bin/yq &&\
-              chmod +x /usr/local/bin/yq
       - run:
           name: Checkout the gitops repo
           command: |
