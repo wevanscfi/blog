@@ -51,7 +51,8 @@ jobs:
     working_directory: /
     steps:
       - run:
-        command: |
+          name: Checkout the gitops repo
+          command: |
             if [ "${CIRCLE_BRANCH}" == "main" ]; then
               git clone https://github.com/wevanscfi/homelab.git
               cd homelab && ls -l
