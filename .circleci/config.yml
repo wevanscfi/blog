@@ -49,6 +49,8 @@ jobs:
             fi
   gitops:
     working_directory: /
+    docker:
+      - image: docker:17.05.0-ce-git
     steps:
       - run:
           name: Checkout the gitops repo
