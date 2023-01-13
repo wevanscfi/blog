@@ -4,7 +4,13 @@ workflows:
   build:
     jobs:
       - build
-      - deploy
+      - promote:
+          type: approval
+          requires:
+            - build
+      - deploy:
+          requires:
+            - promote
 jobs:
   build:
     working_directory: /blog
@@ -59,6 +65,9 @@ jobs:
             if [ "${CIRCLE_BRANCH}" == "main" ]; then
               git clone https://github.com/wevanscfi/homelab.git
               cd homelab && ls -l
-              yq e '(.spec.source.helm.parameters[] | select(.name == "image.tag")).value = "'"$CIRCLE_SHA1"'"' manifests/apps/templates/blog.yaml
+              yq e -i '(.spec.source.helm.parameters[] | select(.name == "image.tag")).value = "'"$CIRCLE_SHA1"'"' manifests/apps/templates/blog.yaml
+              git add manifests/apps/templates/blog.yaml
+              git commit -m "Deploy blog: ${CIRCLE_SHA1}"
+              git push origin main
             fi
 

@@ -1,0 +1,8 @@
+# Dockerfile toolback
+FROM alpine as ops-toolbox
+
+RUN apk add --no-cache wget git yq
+
+# Run a shell
+CMD ["/bin/sh"]
+
