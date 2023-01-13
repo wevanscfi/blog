@@ -63,6 +63,8 @@ jobs:
           name: Checkout the gitops repo
           command: |
             if [ "${CIRCLE_BRANCH}" == "main" ]; then
+              git config --global user.email "paul@wevans.io"
+              git config --global user.name "Paul"
               git clone https://github.com/wevanscfi/homelab.git
               cd homelab && ls -l
               yq e -i '(.spec.source.helm.parameters[] | select(.name == "image.tag")).value = "'"$CIRCLE_SHA1"'"' manifests/apps/templates/blog.yaml
