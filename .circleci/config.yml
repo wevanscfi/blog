@@ -1,25 +1,10 @@
 
 version: 2.1
 workflows:
-  say-hello-workflow:
-    jobs:
-      - say-hello
   build:
     jobs:
       - build
 jobs:
-  say-hello:
-    # Specify the execution environment. You can specify an image from Dockerhub or use one of our Convenience Images from CircleCI's Developer Hub.
-    # See: https://circleci.com/docs/2.0/configuration-reference/#docker-machine-macos-windows-executor
-    docker:
-      - image: cimg/base:stable
-    # Add steps to the job
-    # See: https://circleci.com/docs/2.0/configuration-reference/#steps
-    steps:
-      - checkout
-      - run:
-          name: "Say hello"
-          command: "echo Hello, World!"
   build:
     working_directory: /blog
     docker:
@@ -61,5 +46,14 @@ jobs:
               docker login --username $DOCKER_HUB_USER --password $DOCKER_HUB_ACCESS_TOKEN
               docker tag blog "pevanscfi/blog:${CIRCLE_SHA1}"
               docker push "pevanscfi/blog:${CIRCLE_SHA1}"
+            fi
+  gitops:
+    working_directory: /
+    steps:
+      - run:
+        command: |
+            if [ "${CIRCLE_BRANCH}" == "main" ]; then
+              git clone https://github.com/wevanscfi/homelab.git
+              cd homelab && ls -l
             fi
 
