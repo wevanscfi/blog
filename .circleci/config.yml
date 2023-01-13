@@ -4,6 +4,7 @@ workflows:
   build:
     jobs:
       - build
+      - deploy
 jobs:
   build:
     working_directory: /blog
@@ -47,7 +48,7 @@ jobs:
               docker tag blog "pevanscfi/blog:${CIRCLE_SHA1}"
               docker push "pevanscfi/blog:${CIRCLE_SHA1}"
             fi
-  gitops:
+  deploy:
     working_directory: /
     docker:
       - image: docker:17.05.0-ce-git
