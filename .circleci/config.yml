@@ -54,10 +54,21 @@ jobs:
       - image: docker:17.05.0-ce-git
     steps:
       - run:
+        name: Install YQ
+        command: >
+          curl -L -o ${HOME}/yq
+          https://github.com/mikefarah/yq/releases/download/<< parameters.version
+          >>/yq_linux_amd64
+
+          chmod +x ${HOME}/yq
+
+          ${HOME}/yq --version
+      - run:
           name: Checkout the gitops repo
           command: |
             if [ "${CIRCLE_BRANCH}" == "main" ]; then
               git clone https://github.com/wevanscfi/homelab.git
               cd homelab && ls -l
+              yq e '(.spec.source.helm.parameters[] | select(.name == "image.tag")).value = "'"$CIRCLE_SHA1"'"' manifests/apps/templates/blog.yaml
             fi
 
