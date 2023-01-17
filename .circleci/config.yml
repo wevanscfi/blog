@@ -1,18 +1,25 @@
-
 version: 2.1
 workflows:
   build:
     jobs:
-      - build
+      - build_and_push
       - promote:
+          filters:
+            branches:
+              only:
+                - main
           type: approval
           requires:
-            - build
+            - build_and_push
       - deploy:
+          filters:
+            branches:
+              only:
+                - main
           requires:
             - promote
 jobs:
-  build:
+  build_and_push:
     working_directory: /blog
     docker:
       - image: docker:17.05.0-ce-git
@@ -42,18 +49,14 @@ jobs:
           key: v1-{{ .Branch }}-{{ epoch }}
           paths:
             - /caches/blog.tar
-      #- run:
-          #name: Run tests
-          #command: |
-            #docker-compose -f ./docker-compose.test.yml up
       - deploy:
+          when:
+            - equal: [ main, << pipeline.git.branch >> ]
           name: Push application Docker image
           command: |
-            if [ "${CIRCLE_BRANCH}" == "main" ]; then
-              docker login --username $DOCKER_HUB_USER --password $DOCKER_HUB_ACCESS_TOKEN
-              docker tag blog "pevanscfi/blog:${CIRCLE_SHA1}"
-              docker push "pevanscfi/blog:${CIRCLE_SHA1}"
-            fi
+            docker login --username $DOCKER_HUB_USER --password $DOCKER_HUB_ACCESS_TOKEN
+            docker tag blog "pevanscfi/blog:${CIRCLE_SHA1}"
+            docker push "pevanscfi/blog:${CIRCLE_SHA1}"
   deploy:
     working_directory: /
     docker:
@@ -63,16 +66,14 @@ jobs:
           fingerprints:
             - "ef:9b:5b:60:63:61:04:a9:52:32:e7:cd:0b:d7:a2:43"
       - run:
-          name: Checkout the gitops repo
+          name: Update the gitops repo
           command: |
-            if [ "${CIRCLE_BRANCH}" == "main" ]; then
-              git config --global user.email "paul+circleci@wevans.io"
-              git config --global user.name "CircleCI"
-              git clone git@github.com:wevanscfi/homelab.git
-              cd homelab && ls -l
-              yq e -i '(.spec.source.helm.parameters[] | select(.name == "image.tag")).value = "'"$CIRCLE_SHA1"'"' manifests/apps/templates/blog.yaml
-              git add manifests/apps/templates/blog.yaml
-              git commit -m "Deploy blog: ${CIRCLE_SHA1}"
-              git push origin main
-            fi
+            git config --global user.email "paul+circleci@wevans.io"
+            git config --global user.name "CircleCI"
+            git clone git@github.com:wevanscfi/homelab.git
+            cd homelab && ls -l
+            yq e -i '(.spec.source.helm.parameters[] | select(.name == "image.tag")).value = "'"$CIRCLE_SHA1"'"' manifests/apps/templates/blog.yaml
+            git add manifests/apps/templates/blog.yaml
+            git commit -m "Deploy blog: ${CIRCLE_SHA1}"
+            git push origin main
 
