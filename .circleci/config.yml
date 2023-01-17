@@ -50,7 +50,7 @@ jobs:
           paths:
             - /caches/blog.tar
       - deploy:
-          when:
+          condition:
             - equal: [ main, << pipeline.git.branch >> ]
           name: Push application Docker image
           command: |
