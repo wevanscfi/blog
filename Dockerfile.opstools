@@ -1,7 +1,11 @@
 # Dockerfile toolback
 FROM alpine as ops-toolbox
 
-RUN apk add --no-cache wget git yq
+RUN apk add --no-cache wget git yq openssh-client
+
+RUN mkdir ~/.ssh
+RUN ssh-keyscan -p 443 ssh.github.com >> ~/.ssh/known_hosts
+RUN ssh-keyscan -t rsa github.com >> ~/.ssh/known_hosts
 
 # Run a shell
 CMD ["/bin/sh"]

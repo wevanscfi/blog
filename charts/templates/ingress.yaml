@@ -18,8 +18,13 @@ metadata:
   name: {{ $fullName }}
   labels:
     {{- include "blog.labels" . | nindent 4 }}
-  {{- with .Values.ingress.annotations }}
+  {{- if or .Values.ingress.issuer .Values.ingress.annotations }}
   annotations:
+    {{- if .Values.ingress.issuer }}
+    cert-manager.io/cluster-issuer: {{ .Values.ingress.issuer }}
+    {{- end }}
+  {{- end }}
+  {{- with .Values.ingress.annotations }}
     {{- toYaml . | nindent 4 }}
   {{- end }}
 spec:
