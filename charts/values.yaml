@@ -40,6 +40,8 @@ service:
   type: ClusterIP
   port: 3000
 
+rails_env: development
+
 postgres:
   enabled: true
 
