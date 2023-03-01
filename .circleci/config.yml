@@ -47,9 +47,9 @@ jobs:
       - run:
           name: Run rspec tests
           command: |
-            ./cc-test-reporter before-build
-            docker run -e "RAILS_ENV=test" blog bundle exec rspec
-            ./cc-test-reporter after-build --coverage-input-type clover --exit-code $?
+            mkdir coverage
+            docker run -v $(pwd)/coverage:/opt/app/coverage -e "RAILS_ENV=test" blog bundle exec rspec
+            ./tmp/cc-test-reporter format-coverage -t simplecov -o tmp/codeclimate.backend.json coverage/backend/.resultset.json
       - run:
           name: Save Docker image layer cache
           command: |
