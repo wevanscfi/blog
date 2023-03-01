@@ -20,8 +20,8 @@ workflows:
             - promote
 jobs:
   build_and_push:
-    docker:
-      - image: cimg/base:2023.02
+    machine: # executor type
+      image: ubuntu-2004:202010-01
     steps:
       - checkout
       - setup_remote_docker
@@ -49,8 +49,7 @@ jobs:
           command: |
             mkdir coverage
             docker run -v coverage:/opt/app/coverage -e "RAILS_ENV=test" blog bundle exec rspec
-            (docker run -v coverage:/opt/app/coverage blog cat coverage/.resultset) > coverage/.resultset.json
-            ./cc-test-reporter format-coverage -t simplecov -o tmp/codeclimate.json coverage/.resultset.json
+            ./cc-test-reporter format-coverage -t simplecov coverage/.resultset.json
       - run:
           name: Save Docker image layer cache
           command: |
