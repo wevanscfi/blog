@@ -20,7 +20,6 @@ workflows:
             - promote
 jobs:
   build_and_push:
-    working_directory: /blog
     docker:
       - image: cimg/base:2023.02
     steps:
