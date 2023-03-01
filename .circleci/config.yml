@@ -40,18 +40,9 @@ jobs:
           command: |
             docker build --cache-from=blog -t blog .
       - run:
-          name: Setup Code Climate test-reporter
-          command: |
-            curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
-            chmod +x ./cc-test-reporter
-      - run:
           name: Run rspec tests
           command: |
-            mkdir coverage
-            docker run -v coverage:/opt/app/coverage -e "RAILS_ENV=test" blog bundle exec rspec
-            ./cc-test-reporter format-coverage -t simplecov -o tmp/codeclimate.json coverage/.resultset.json
-      - store_artifacts:
-          path: coverage
+            docker run -v coverage:/opt/app/coverage -e "RAILS_ENV=test" blog entrypoint.test.sh
       - run:
           name: Save Docker image layer cache
           command: |
