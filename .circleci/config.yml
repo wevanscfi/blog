@@ -49,9 +49,8 @@ jobs:
           command: |
             mkdir coverage
             docker run -v coverage:/opt/app/coverage -e "RAILS_ENV=test" blog bundle exec rspec
+            (docker run -v coverage:/opt/app/coverage blog cat coverag/.resultset) > coverage/.resultset.json
             ./cc-test-reporter format-coverage -t simplecov -o tmp/codeclimate.json coverage/.resultset.json
-      - store_artifacts:
-          path: coverage
       - run:
           name: Save Docker image layer cache
           command: |
