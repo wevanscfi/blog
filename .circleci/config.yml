@@ -41,6 +41,17 @@ jobs:
           command: |
             docker build --cache-from=blog -t blog .
       - run:
+          name: Setup Code Climate test-reporter
+          command: |
+            curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
+            chmod +x ./cc-test-reporter
+      - run:
+          name: Run rspec tests
+          command: |
+            ./cc-test-reporter before-build
+            docker run -e "RAILS_ENV=test" blog bundle exec rspec
+            ./cc-test-reporter after-build --coverage-input-type clover --exit-code $?
+      - run:
           name: Save Docker image layer cache
           command: |
             mkdir -p /caches
@@ -57,6 +68,7 @@ jobs:
             docker login --username $DOCKER_HUB_USER --password $DOCKER_HUB_ACCESS_TOKEN
             docker tag blog "pevanscfi/blog:${CIRCLE_SHA1}"
             docker push "pevanscfi/blog:${CIRCLE_SHA1}"
+
   deploy:
     working_directory: /
     docker:
