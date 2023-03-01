@@ -1,10 +1,6 @@
 # Dockerfile development version
 FROM ruby:3.2.0 AS blog-dev
 
-# Install codeclimate reporter
-RUN curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > /opt/cc-test-reporter
-RUN chmod +x /opt/cc-test-reporter
-
 # Install yarn
 RUN curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg -o /root/yarn-pubkey.gpg && apt-key add /root/yarn-pubkey.gpg
 RUN echo "deb https://dl.yarnpkg.com/debian/ stable main" > /etc/apt/sources.list.d/yarn.list
