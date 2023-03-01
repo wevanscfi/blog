@@ -42,7 +42,7 @@ jobs:
       - run:
           name: Run rspec tests
           command: |
-            docker run -v coverage:/opt/app/coverage -e "CC_TEST_REPORTER_ID=$CC_TEST_REPORTER_ID" blog entrypoint.test.sh
+            docker run -v coverage:/opt/app/coverage -e "RAILS_ENV=test" blog entrypoint.test.sh
       - run:
           name: Save Docker image layer cache
           command: |
