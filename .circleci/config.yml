@@ -41,6 +41,7 @@ jobs:
       - run:
           name: Setup Code Climate test-reporter
           command: |
+            sudo apt-get install jq
             curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
             chmod +x ./cc-test-reporter
       - run:
@@ -48,6 +49,7 @@ jobs:
           command: |
             mkdir coverage
             docker run -v $(pwd)/coverage:/opt/app/coverage -e "RAILS_ENV=test" -e "CC_TEST_REPORTER_ID=$CC_TEST_REPORTER_ID" blog bundle exec rspec
+            jq 'walk(try .lines // .)' coverage/.resultset.json > coverage/.resultset.json
             ./cc-test-reporter format-coverage -t simplecov coverage/.resultset.json
       - run:
           name: Save Docker image layer cache
