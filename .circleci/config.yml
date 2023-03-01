@@ -18,12 +18,15 @@ workflows:
                 - main
           requires:
             - promote
+orbs:
+  jq: circleci/jq@2.2.0
 jobs:
   build_and_push:
     machine: # executor type
       image: ubuntu-2004:202010-01
     steps:
       - checkout
+      - jq/install
       - restore_cache:
           keys:
             - v1-{{ .Branch }}
