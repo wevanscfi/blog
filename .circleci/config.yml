@@ -48,8 +48,8 @@ jobs:
           name: Run rspec tests
           command: |
             mkdir coverage
-            docker run -v $(pwd)/coverage:/opt/app/coverage -e "RAILS_ENV=test" blog bundle exec rspec
-            ./cc-test-reporter format-coverage -t simplecov -o tmp/codeclimate.backend.json coverage/backend/.resultset.json
+            docker run -v coverage:/opt/app/coverage -e "RAILS_ENV=test" blog bundle exec rspec
+            ./cc-test-reporter format-coverage -t simplecov -o tmp/codeclimate.json coverage/.resultset.json
       - run:
           name: Save Docker image layer cache
           command: |
