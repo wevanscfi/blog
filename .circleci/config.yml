@@ -18,15 +18,12 @@ workflows:
                 - main
           requires:
             - promote
-orbs:
-  jq: circleci/jq@2.2.0
 jobs:
   build_and_push:
     machine: # executor type
       image: ubuntu-2004:202010-01
     steps:
       - checkout
-      - jq/install
       - restore_cache:
           keys:
             - v1-{{ .Branch }}
@@ -52,8 +49,7 @@ jobs:
           command: |
             mkdir coverage
             docker run -v $(pwd)/coverage:/opt/app/coverage -e "RAILS_ENV=test" -e "CC_TEST_REPORTER_ID=$CC_TEST_REPORTER_ID" blog bundle exec rspec
-            jq 'walk(try .lines // .)' coverage/.resultset.json > coverage/.resultset_fixed.json
-            ./cc-test-reporter format-coverage -t simplecov -o coverage/codeclimate.json coverage/.resultset_fixed.json
+            ./cc-test-reporter format-coverage -t simplecov -o coverage/codeclimate.json coverage/.resultset.json
             ./cc-test-reporter upload-coverage
       - run:
           name: Save Docker image layer cache
