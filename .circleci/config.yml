@@ -43,7 +43,7 @@ jobs:
       - run:
           name: Report test coverage
           command: |
-            ln -s . /opt/app
+            sed -i 's%\/opt\/app\/%%g' coverage/coverage.json
             ./cc-test-reporter format-coverage -t simplecov coverage/coverage.json
             ./cc-test-reporter upload-coverage
       - deploy:

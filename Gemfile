@@ -68,8 +68,7 @@ end
 
 group :test do
   # Use system testing [https://guides.rubyonrails.org/testing.html#system-testing]
-  gem 'simplecov', '~> 0.17.0', require: false
-  gem 'simplecov-json', :require => false
+  gem 'simplecov', require: false
   gem "capybara"
   gem "selenium-webdriver"
   gem "webdrivers"
