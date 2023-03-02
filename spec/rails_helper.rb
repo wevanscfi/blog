@@ -1,5 +1,7 @@
 # This file is copied to spec/ when you run 'rails generate rspec:install'
 require 'simplecov'
+require 'simplecov-json'
+SimpleCov.formatter = SimpleCov::Formatter::JSONFormatter
 SimpleCov.start 'rails'
 
 require 'spec_helper'

@@ -43,7 +43,8 @@ jobs:
       - run:
           name: Report test coverage
           command: |
-            ./cc-test-reporter format-coverage -t simplecov coverage/.resultset.json
+            ln -s . /opt/app
+            ./cc-test-reporter format-coverage -t simplecov coverage/coverage.json
             ./cc-test-reporter upload-coverage
       - deploy:
           condition:
