@@ -22,18 +22,9 @@ jobs:
   build_and_push:
     machine: # executor type
       image: ubuntu-2004:202010-01
+      docker_layer_caching: true
     steps:
       - checkout
-      - restore_cache:
-          keys:
-            - v1-{{ .Branch }}
-          paths:
-            - /caches/blog.tar
-      - run:
-          name: Load Docker image layer cache
-          command: |
-            set +o pipefail
-            docker load -i /caches/blog.tar | true
       - run:
           name: Build application Docker image
           command: |
@@ -48,18 +39,9 @@ jobs:
           name: Run rspec tests
           command: |
             mkdir coverage
-            docker run -v $(pwd)/coverage:/opt/app/coverage -e "RAILS_ENV=test" -e "CC_TEST_REPORTER_ID=$CC_TEST_REPORTER_ID" blog bundle exec rspec
-            ./cc-test-reporter format-coverage -t simplecov -o coverage/codeclimate.json coverage/.resultset.json
+            docker run -v $(pwd)/coverage:/opt/app/coverage -e "RAILS_ENV=test" blog bundle exec rspec
+            ./cc-test-reporter format-coverage -t simplecov coverage/.resultset.json
             ./cc-test-reporter upload-coverage
-      - run:
-          name: Save Docker image layer cache
-          command: |
-            mkdir -p /caches
-            docker save -o /caches/blog.tar blog
-      - save_cache:
-          key: v1-{{ .Branch }}-{{ epoch }}
-          paths:
-            - /caches/blog.tar
       - deploy:
           condition:
             - equal: [ main, << pipeline.git.branch >> ]
