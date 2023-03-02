@@ -40,8 +40,6 @@ jobs:
           command: |
             mkdir coverage
             docker run -v $(pwd)/coverage:/opt/app/coverage -e "RAILS_ENV=test" blog bundle exec rspec
-            ./cc-test-reporter format-coverage -t simplecov coverage/.resultset.json
-            ./cc-test-reporter upload-coverage
       - run:
           name: Report test coverage
           command: |
