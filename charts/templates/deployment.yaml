@@ -27,6 +27,17 @@ spec:
       serviceAccountName: {{ include "blog.serviceAccountName" . }}
       securityContext:
         {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      initContainers:
+        - name: check-db-ready
+          image: postgres:9.6.5
+          command: [
+            'sh',
+            '-c',
+            'until pg_isready -h $DATABASE_HOST; do echo waiting for database; sleep 2; done;'
+          ]
+          env:
+            - name: DATABASE_HOST
+              value: {{ template "postgresql.fullname" . }}
       containers:
         - name: {{ .Chart.Name }}
           securityContext:

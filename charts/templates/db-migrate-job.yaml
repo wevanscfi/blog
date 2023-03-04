@@ -1,7 +1,10 @@
 apiVersion: apps/v1
 kind: Job
 metadata:
-  name: {{ include "blog.fullname" . }}-db-migrate
+  generateName: {{ include "blog.fullname" . }}-db-migrate-
+  annotations:
+    argocd.argoproj.io/hook: PreSync
+    argocd.argoproj.io/hook-delete-policy: HookSucceeded
   labels:
     {{- include "blog.labels" . | nindent 4 }}
 spec:
