@@ -4,7 +4,7 @@ metadata:
   generateName: {{ include "blog.fullname" . }}-db-migrate-
   annotations:
     argocd.argoproj.io/hook: Sync
-    argocd.argoproj.io/sync-wave: "-5"
+    argocd.argoproj.io/sync-wave: "2"
     argocd.argoproj.io/hook-delete-policy: HookSucceeded
   labels:
     {{- include "blog.labels" . | nindent 4 }}

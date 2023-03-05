@@ -44,10 +44,8 @@ application:
   env:
     rails_env: development
 
-postgres:
+postgresql:
   enabled: true
-  commonAnnotations:
-    argocd.argoproj.io/sync-wave: "-10"
   primary:
     resources:
       requests:
