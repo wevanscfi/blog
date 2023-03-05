@@ -152,6 +152,9 @@ GEM
     rails-dom-testing (2.0.3)
       activesupport (>= 4.2.0)
       nokogiri (>= 1.6)
+    rails-healthcheck (1.4.0)
+      actionpack
+      railties
     rails-html-sanitizer (1.5.0)
       loofah (~> 2.19, >= 2.19.1)
     railties (7.0.4.2)
@@ -240,6 +243,7 @@ DEPENDENCIES
   pg (~> 1.0)
   puma (~> 5.0)
   rails (~> 7.0.4)
+  rails-healthcheck
   rspec-rails (~> 6.0.0)
   selenium-webdriver
   simplecov
