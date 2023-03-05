@@ -32,6 +32,14 @@
 /public/assets
 /charts/charts
 
+# Ignore Cypress Output
+/cypress/screenshots
+/cypress/videos
+
 # Ignore master key for decrypting credentials and more.
 /config/master.key
 coverage
+
+# Ignore node modules
+/node_modules
+

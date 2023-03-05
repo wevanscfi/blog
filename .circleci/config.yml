@@ -36,6 +36,11 @@ jobs:
             curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
             chmod +x ./cc-test-reporter
       - run:
+          name: Run cypress tests
+          command: |
+            mkdir coverage
+            docker run -e "RAILS_ENV=test" blog bundle exec rake db:create db:migrate cypress:run
+      - run:
           name: Run rspec tests
           command: |
             mkdir coverage
