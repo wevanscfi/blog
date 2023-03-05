@@ -29,15 +29,23 @@ spec:
         {{- toYaml .Values.podSecurityContext | nindent 8 }}
       initContainers:
         - name: check-db-ready
-          image: postgres:9.6.5
-          command: [
-            'sh',
-            '-c',
-            'until pg_isready -h $DATABASE_HOST; do echo waiting for database; sleep 2; done;'
-          ]
+          securityContext:
+            {{- toYaml .Values.securityContext | nindent 12 }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+          command: ["bundle", "exec", "rails", "db:migrate:status"]
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
           env:
+            {{- range $key, $value := .Values.application.env }}
+            - name: {{ $key | upper }}
+              value: {{ $value }}
+            {{- end }}
             - name: DATABASE_HOST
               value: {{ template "postgresql.fullname" . }}
+            - name: POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ template "postgresql.fullname" . }}
+                  key: postgres-password
       containers:
         - name: {{ .Chart.Name }}
           securityContext:
