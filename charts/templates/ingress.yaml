@@ -20,6 +20,7 @@ metadata:
     {{- include "blog.labels" . | nindent 4 }}
   {{- if or .Values.ingress.issuer .Values.ingress.annotations }}
   annotations:
+    argocd.argoproj.io/sync-wave: "4"
     {{- if .Values.ingress.issuer }}
     cert-manager.io/cluster-issuer: {{ .Values.ingress.issuer }}
     {{- end }}
