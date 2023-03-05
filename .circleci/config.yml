@@ -43,7 +43,7 @@ jobs:
       - run:
           name: Run rspec tests
           command: |
-            mkdir coverage
+            mkdir -p coverage
             docker run -v $(pwd)/coverage:/opt/app/coverage -e "RAILS_ENV=test" blog bundle exec rspec
       - run:
           name: Report test coverage
