@@ -15,7 +15,6 @@ spec:
     metadata:
       {{- with .Values.podAnnotations }}
       annotations:
-        argocd.argoproj.io/sync-wave: "10"
         {{- toYaml . | nindent 8 }}
       {{- end }}
       labels:
