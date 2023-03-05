@@ -2,6 +2,8 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: {{ include "blog.fullname" . }}
+  annotations:
+    argocd.argoproj.io/sync-wave: "10"
   labels:
     {{- include "blog.labels" . | nindent 4 }}
 spec:
