@@ -78,7 +78,7 @@ jobs:
       - run:
           name: Run E2E tests
           command: |
-            docker run -it -v $PWD:/e2e -w /e2e cypress/included:12.6.0
+            docker run -it -v $PWD:/e2e -w /e2e --network="host" cypress/included:12.6.0
 
   deploy:
     working_directory: /
