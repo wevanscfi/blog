@@ -1,14 +1,9 @@
 version: 2.1
-orbs:
-  cypress: cypress-io/cypress@3.0.0
 workflows:
   build_test_push:
     jobs:
       - build
-      - cypress/run:
-          cypress-command: npx cypress run --browser chrome
-          install-browsers: true
-          start-command: docker run -p 3000:3000 -e "RAILS_ENV=test" "pevanscfi/blog:${CIRCLE_SHA1}"
+      - cypress:
           requires:
             - build
       - rspec:
@@ -69,6 +64,20 @@ jobs:
             sed -i 's%\/opt\/app\/%%g' coverage/coverage.json
             ./cc-test-reporter format-coverage -t simplecov coverage/coverage.json
             ./cc-test-reporter upload-coverage
+  cypress:
+    machine: # executor type
+      image: ubuntu-2004:202010-01
+      docker_layer_caching: true
+    steps:
+      - checkout
+      - run:
+          name: Run start server
+          command: |
+            docker run -p 3000:3000 -e "RAILS_ENV=test" "pevanscfi/blog:${CIRCLE_SHA1}"
+      - run:
+          name: Run E2E tests
+          command: |
+            docker run -it -e "CYPRESS_BASE_URL=localhost:3000" -v $PWD:/e2e -w /e2e cypress/included:3.2.0
 
   deploy:
     working_directory: /
