@@ -4,6 +4,7 @@ kind: postgresql
 metadata:
   name: {{ include "blog.fullname" . }}-postgresql
 spec:
+  teamId: wevans
   volume:
     size: {{ .Values.postgresql.persistence.size }}
   numberOfInstances: {{ .Values.postgresql.replicas }}
