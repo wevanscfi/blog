@@ -16,7 +16,7 @@ workflows:
                 - main
           type: approval
           requires:
-            - cypress/run
+            - cypress
             - rspec
       - deploy:
           filters:
