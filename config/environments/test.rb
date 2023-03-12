@@ -10,6 +10,7 @@ Rails.application.configure do
   config.hosts << "www.example.com"
   config.hosts << "localhost"
   config.hosts << "127.0.0.1"
+  config.hosts << "172.17.0.1"
   config.hosts << "host.docker.internal"
   # Turn false under Spring and add config.action_view.cache_template_loading = true.
   config.cache_classes = true
