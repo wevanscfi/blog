@@ -15,6 +15,7 @@ spec:
     - createdb
   postgresql:
     version: "15"
-  {{- toYaml .Values.postgresql.primary.resources | nindent 2 }}
+  resources:
+    {{- toYaml .Values.postgresql.primary.resources | nindent 4 }}
 {{- end }}
 
