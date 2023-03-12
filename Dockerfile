@@ -12,7 +12,7 @@ ENV DISTRO=bullseye
 RUN echo "deb https://deb.nodesource.com/$NODE_VERSION $DISTRO main" > /etc/apt/sources.list.d/nodesource.list
 RUN echo "deb-src https://deb.nodesource.com/$NODE_VERSION $DISTRO main" >> /etc/apt/sources.list.d/nodesource.list
 
-RUN apt-get update && apt-get install -y --no-install-recommends libgtk2.0-0 libgtk-3-0 libgbm-dev libnotify-dev libgconf-2-4 libnss3 libxss1 libasound2 libxtst6 xauth xvfb nodejs yarn
+RUN apt-get update && apt-get install -y --no-install-recommends nodejs yarn
 
 
 # Default directory
@@ -29,7 +29,7 @@ RUN bundle check || bundle install
 
 # Install npm packages
 COPY package.json yarn.lock ./
-RUN yarn install --production=false
+RUN yarn install
 
 # Copy the remaining files
 COPY . .
