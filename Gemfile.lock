@@ -242,7 +242,7 @@ DEPENDENCIES
   jbuilder
   pg (~> 1.0)
   puma (~> 5.0)
-  rails (~> 7.0.4)
+  rails (~> 7.0.4, >= 7.0.4.1)
   rails-healthcheck
   rspec-rails (~> 6.0.0)
   selenium-webdriver
@@ -259,4 +259,4 @@ RUBY VERSION
    ruby 3.2.1p31
 
 BUNDLED WITH
-   2.4.7
+   2.4.6
