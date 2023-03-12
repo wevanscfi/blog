@@ -67,10 +67,13 @@ jobs:
             ./cc-test-reporter upload-coverage
   cypress:
     machine: # executor type
-      image: ubuntu-2004-browser:202010-01
+      image: ubuntu-2004:202010-01
       docker_layer_caching: true
     steps:
       - checkout
+      - run:
+          name: Install xvfb
+          command: sudo apt install -y xvfb
       - run:
           name: Run start server
           command: |
