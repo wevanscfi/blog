@@ -1,8 +1,24 @@
 version: 2.1
+orbs:
+  cypress: cypress-io/cypress@3.0.0
 workflows:
-  build:
+  build_test_push:
     jobs:
-      - build_and_push
+      - build
+      - cypress/run:
+          cypress-command: npx cypress run --browser chrome
+          install-browsers: true
+          start-command: docker run -p 3000:3000 -e "RAILS_ENV=test" "pevanscfi/blog:${CIRCLE_SHA1}"
+          requires:
+            - build
+      - rspec
+          requires:
+            - build
+      - push:
+          requires:
+            - build
+            - cypress/run
+            - rspec
       - promote:
           filters:
             branches:
@@ -10,7 +26,7 @@ workflows:
                 - main
           type: approval
           requires:
-            - build_and_push
+            - push
       - deploy:
           filters:
             branches:
@@ -19,7 +35,7 @@ workflows:
           requires:
             - promote
 jobs:
-  build_and_push:
+  build:
     machine: # executor type
       image: ubuntu-2004:202010-01
       docker_layer_caching: true
@@ -28,7 +44,12 @@ jobs:
       - run:
           name: Build application Docker image
           command: |
-            docker build --cache-from=blog -t blog .
+            docker build --cache-from=blog -t "pevanscfi/blog:${CIRCLE_SHA1}" .
+  rspec:
+    machine: # executor type
+      image: ubuntu-2004:202010-01
+      docker_layer_caching: true
+    steps:
       - run:
           name: Setup Code Climate test-reporter
           command: |
@@ -36,28 +57,25 @@ jobs:
             curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
             chmod +x ./cc-test-reporter
       - run:
-          name: Run cypress tests
-          command: |
-            mkdir coverage
-            docker run -e "RAILS_ENV=test" blog bundle exec rake db:create db:migrate cypress:run
-      - run:
           name: Run rspec tests
           command: |
             mkdir -p coverage
-            docker run -v $(pwd)/coverage:/opt/app/coverage -e "RAILS_ENV=test" blog bundle exec rspec
+            docker run -v $(pwd)/coverage:/opt/app/coverage -e "RAILS_ENV=test" "pevanscfi/blog:${CIRCLE_SHA1}" bundle exec rspec
       - run:
           name: Report test coverage
           command: |
             sed -i 's%\/opt\/app\/%%g' coverage/coverage.json
             ./cc-test-reporter format-coverage -t simplecov coverage/coverage.json
             ./cc-test-reporter upload-coverage
-      - deploy:
-          condition:
-            - equal: [ main, << pipeline.git.branch >> ]
+  push:
+    machine: # executor type
+      image: ubuntu-2004:202010-01
+      docker_layer_caching: true
+    steps:
+      - push_image:
           name: Push application Docker image
           command: |
             docker login --username $DOCKER_HUB_USER --password $DOCKER_HUB_ACCESS_TOKEN
-            docker tag blog "pevanscfi/blog:${CIRCLE_SHA1}"
             docker push "pevanscfi/blog:${CIRCLE_SHA1}"
 
   deploy:
