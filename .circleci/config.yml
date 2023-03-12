@@ -35,7 +35,8 @@ jobs:
       - run:
           name: Build application Docker image
           command: |
-            docker build --cache-from=blog -t "pevanscfi/blog:${CIRCLE_SHA1}" .
+            docker build --cache-from=blog -t blog .
+            docker tag blog "pevanscfi/blog:${CIRCLE_SHA1}"
       - run:
           name: Push application Docker image
           command: |
@@ -77,7 +78,7 @@ jobs:
       - run:
           name: Run E2E tests
           command: |
-            docker run -it -e "CYPRESS_BASE_URL=localhost:3000" -v $PWD:/e2e -w /e2e cypress/included:3.2.0
+            docker run -it -v $PWD:/e2e -w /e2e cypress/included:12.6.0
 
   deploy:
     working_directory: /
