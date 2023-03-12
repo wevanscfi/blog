@@ -11,7 +11,7 @@ workflows:
           start-command: docker run -p 3000:3000 -e "RAILS_ENV=test" "pevanscfi/blog:${CIRCLE_SHA1}"
           requires:
             - build
-      - rspec
+      - rspec:
           requires:
             - build
       - push:
