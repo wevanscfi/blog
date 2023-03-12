@@ -73,7 +73,7 @@ jobs:
       - run:
           name: Run start server
           command: |
-            docker run -p 3000:3000 -e "RAILS_ENV=test" "pevanscfi/blog:${CIRCLE_SHA1}"
+            docker run -d -p 3000:3000 -e "RAILS_ENV=test" "pevanscfi/blog:${CIRCLE_SHA1}"
       - run:
           name: Run E2E tests
           command: |
