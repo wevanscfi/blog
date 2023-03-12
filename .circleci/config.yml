@@ -51,6 +51,7 @@ jobs:
       image: ubuntu-2004:202010-01
       docker_layer_caching: true
     steps:
+      - checkout
       - run:
           name: Setup Code Climate test-reporter
           command: |
@@ -68,16 +69,6 @@ jobs:
             sed -i 's%\/opt\/app\/%%g' coverage/coverage.json
             ./cc-test-reporter format-coverage -t simplecov coverage/coverage.json
             ./cc-test-reporter upload-coverage
-  push:
-    machine: # executor type
-      image: ubuntu-2004:202010-01
-      docker_layer_caching: true
-    steps:
-      - run:
-          name: Push application Docker image
-          command: |
-            docker login --username $DOCKER_HUB_USER --password $DOCKER_HUB_ACCESS_TOKEN
-            docker push "pevanscfi/blog:${CIRCLE_SHA1}"
 
   deploy:
     working_directory: /
