@@ -1,10 +1,19 @@
 # Dockerfile development version
-FROM ruby:3.2.0 AS blog-dev
+FROM ruby:3.2.1 AS blog-dev
 
-# Install yarn
+# Install yarn PPA
 RUN curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg -o /root/yarn-pubkey.gpg && apt-key add /root/yarn-pubkey.gpg
 RUN echo "deb https://dl.yarnpkg.com/debian/ stable main" > /etc/apt/sources.list.d/yarn.list
+
+# Insall nodjs PPA
+RUN curl -sS https://deb.nodesource.com/gpgkey/nodesource.gpg.key -o /root/nodejs-pubkey.gpg && apt-key add /root/nodejs-pubkey.gpg
+ENV NODE_VERSION=node_18.x
+ENV DISTRO=bullseye
+RUN echo "deb https://deb.nodesource.com/$NODE_VERSION $DISTRO main" > /etc/apt/sources.list.d/nodesource.list
+RUN echo "deb-src https://deb.nodesource.com/$NODE_VERSION $DISTRO main" >> /etc/apt/sources.list.d/nodesource.list
+
 RUN apt-get update && apt-get install -y --no-install-recommends nodejs yarn
+
 
 # Default directory
 ENV INSTALL_PATH /opt/app
@@ -19,6 +28,7 @@ RUN bundle config build.nokogiri --use-system-libraries
 RUN bundle check || bundle install 
 
 # Install npm packages
+COPY package.json yarn.lock ./
 RUN yarn install
 
 # Copy the remaining files

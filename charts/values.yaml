@@ -44,8 +44,13 @@ application:
   env:
     rails_env: development
 
-postgres:
+postgresql:
   enabled: true
+  primary:
+    resources:
+      requests:
+        cpu: 50m
+        memory: 256Mi
 
 ingress:
   enabled: false

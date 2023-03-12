@@ -2,6 +2,8 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: {{ include "blog.fullname" . }}
+  annotations:
+    argocd.argoproj.io/sync-wave: "3"
   labels:
     {{- include "blog.labels" . | nindent 4 }}
 spec:
@@ -27,6 +29,25 @@ spec:
       serviceAccountName: {{ include "blog.serviceAccountName" . }}
       securityContext:
         {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      initContainers:
+        - name: check-db-ready
+          securityContext:
+            {{- toYaml .Values.securityContext | nindent 12 }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+          command: ["bundle", "exec", "rails", "db:migrate:status"]
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          env:
+            {{- range $key, $value := .Values.application.env }}
+            - name: {{ $key | upper }}
+              value: {{ $value }}
+            {{- end }}
+            - name: DATABASE_HOST
+              value: {{ template "postgresql.fullname" . }}
+            - name: POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ template "postgresql.fullname" . }}
+                  key: postgres-password
       containers:
         - name: {{ .Chart.Name }}
           securityContext:
@@ -51,11 +72,11 @@ spec:
                   key: postgres-password
           livenessProbe:
             httpGet:
-              path: /
+              path: /healthcheck
               port: http
           readinessProbe:
             httpGet:
-              path: /
+              path: /healthcheck
               port: http
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
