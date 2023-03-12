@@ -45,11 +45,17 @@ application:
     rails_env: development
 
 postgresql:
-  enabled: true
+  operator:
+    enabled: true
+  bitnami:
+    enabled: false
+  replicas: 2
+  persistence:
+    size: 5Gi
   primary:
     resources:
       requests:
-        cpu: 50m
+        cpu: 10m
         memory: 256Mi
 
 ingress:

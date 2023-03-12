@@ -1,0 +1,20 @@
+{{- if .Values.postgresql.operator.enabled }}
+apiVersion: "acid.zalan.do/v1"
+kind: postgresql
+metadata:
+  name: {{ include "blog.fullname" . }}-postgresql
+spec:
+  volume:
+    size: {{ .Values.postgresql.persistence.size }}
+  numberOfInstances: {{ .Values.postgresql.replicas }}
+  users:
+    superadmin:  # database owner
+    - superuser
+    - createdb
+    {{- include "postgresql.username" . }}: # application user
+    - createdb
+  postgresql:
+    version: "15"
+  {{- toYaml .Values.postgresql.primary.resources | nindent 2 }}
+{{- end }}
+
