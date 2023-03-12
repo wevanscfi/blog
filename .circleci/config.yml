@@ -67,7 +67,7 @@ jobs:
             ./cc-test-reporter upload-coverage
   cypress:
     machine: # executor type
-      image: ubuntu-2004:202010-01
+      image: ubuntu-2004-browser:202010-01
       docker_layer_caching: true
     steps:
       - checkout
