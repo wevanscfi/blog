@@ -2,7 +2,7 @@
 apiVersion: "acid.zalan.do/v1"
 kind: postgresql
 metadata:
-  name: {{ include "blog.fullname" . }}-postgresql
+  name: {{ include "postgresql.fullname" . }}
 spec:
   teamId: wevans
   volume:

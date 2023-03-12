@@ -86,8 +86,7 @@ blog
 - name: POSTGRES_PASSWORD
   valueFrom:
     secretKeyRef:
-      name: {{ template "postgresql.fullname" . }}
-      key: postgres-password
-
+      name: {{ template "postgresql.username" . }}.{{ template "postgresql.fullname" . }}.credentials.postgresql.acid.zalan.do
+      key: password
 {{- end -}}
 {{- end -}}
