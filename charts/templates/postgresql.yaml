@@ -12,7 +12,7 @@ spec:
     superadmin:  # database owner
     - superuser
     - createdb
-    {{- include "postgresql.username" . }}: # application user
+    {{ include "postgresql.username" . }}: # application user
     - createdb
   postgresql:
     version: "15"
