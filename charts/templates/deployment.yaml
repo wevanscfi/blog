@@ -41,13 +41,7 @@ spec:
             - name: {{ $key | upper }}
               value: {{ $value }}
             {{- end }}
-            - name: DATABASE_HOST
-              value: {{ template "postgresql.fullname" . }}
-            - name: POSTGRES_PASSWORD
-              valueFrom:
-                secretKeyRef:
-                  name: {{ template "postgresql.fullname" . }}
-                  key: postgres-password
+            {{- include "postgresql.env" . | nindent 12 }}
       containers:
         - name: {{ .Chart.Name }}
           securityContext:
@@ -63,13 +57,7 @@ spec:
             - name: {{ $key | upper }}
               value: {{ $value }}
             {{- end }}
-            - name: DATABASE_HOST
-              value: {{ template "postgresql.fullname" . }}
-            - name: POSTGRES_PASSWORD
-              valueFrom:
-                secretKeyRef:
-                  name: {{ template "postgresql.fullname" . }}
-                  key: postgres-password
+            {{- include "postgresql.env" . | nindent 12 }}
           livenessProbe:
             httpGet:
               path: /healthcheck

@@ -65,3 +65,28 @@ Create the name of the service account to use
 {{- printf "%s-%s" .Release.Name "postgresql" | trunc  63 | trimSuffix "-" -}}
 {{- end -}}
 
+{{- define "postgresql.username" -}}
+blog
+{{- end -}}
+
+{{- define "postgresql.env" -}}
+{{- if .Values.postgresql.bitnami.enabled -}}
+- name: DATABASE_HOST
+  value: {{ template "postgresql.fullname" . }}
+- name: POSTGRES_PASSWORD
+  valueFrom:
+    secretKeyRef:
+      name: {{ template "postgresql.fullname" . }}
+      key: postgres-password
+{{- else if .Values.postgresql.operator.enabled }}
+- name: DATABASE_HOST
+  value: {{ template "postgresql.fullname" . }}
+- name: POSTGRES_USERNAME
+  value: {{ template "postgresql.username" . }}
+- name: POSTGRES_PASSWORD
+  valueFrom:
+    secretKeyRef:
+      name: {{ template "postgresql.username" . }}.{{ template "postgresql.fullname" . }}.credentials.postgresql.acid.zalan.do
+      key: password
+{{- end -}}
+{{- end -}}
