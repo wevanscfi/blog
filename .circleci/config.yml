@@ -73,8 +73,9 @@ jobs:
       - checkout
       - run:
           name: Start server
+          background: true
           command: |
-            docker run -d -p 3000:3000 -e "RAILS_ENV=test" "pevanscfi/blog:${CIRCLE_SHA1}" bash -c "rake db:create db:migrate db:seed && bundle exec rails s"
+            docker run -it -p 3000:3000 -e "RAILS_ENV=test" "pevanscfi/blog:${CIRCLE_SHA1}" bash -c "rake db:create db:migrate db:seed && bundle exec rails s"
       - run:
           name: Run E2E tests
           command: |
