@@ -94,7 +94,7 @@ jobs:
           command: |
             git config --global user.email "paul+circleci@wevans.io"
             git config --global user.name "CircleCI"
-            git clone git@github.com:wevanscfi/homelab.git
+            git clone git@github.com:wevanscfi/homelab-gitops.git
             cd homelab
             yq e -i '(.spec.source.helm.parameters[] | select(.name == "image.tag")).value = "'"$CIRCLE_SHA1"'"' manifests/wevans/templates/blog.yaml
             git add manifests/wevans/templates/blog.yaml
